@@ -69,9 +69,9 @@ def _is_dict_same(expected, actual, ignore_value_of_keys, ignore_missing_keys=Fa
                        stack.append(StackItem('Different values', expected[key], actual[key]))
     return True, Stack()
 
-def _is_list_same(expected, actual, ignore_value_of_keys):
+def _is_list_same(expected, actual, ignore_value_of_keys, ignore_missing_keys=False):
     for i in xrange(len(expected)):
-        are_same_flag, stack = _are_same(expected[i], actual[i], ignore_value_of_keys)
+        are_same_flag, stack = _are_same(expected[i], actual[i], ignore_value_of_keys, ignore_missing_keys)
         if not are_same_flag:
             return False, \
                    stack.append(
@@ -138,7 +138,7 @@ def _are_same(expected, actual, ignore_value_of_keys, ignore_missing_keys=False)
         return _is_dict_same(expected, actual, ignore_value_of_keys, ignore_missing_keys)
 
     if isinstance(expected, list):
-        return _is_list_same(expected, actual, ignore_value_of_keys)
+        return _is_list_same(expected, actual, ignore_value_of_keys, ignore_missing_keys)
 
     return False, Stack().append(StackItem('Unhandled Type: {0}'.format(type(expected)), expected, actual))
 

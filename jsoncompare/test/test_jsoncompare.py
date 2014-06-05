@@ -367,18 +367,101 @@ class TestJSONCompare(unittest.TestCase):
         self.assertFalse(jsoncompare.contains(expected, actual)[0])
 
     # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
-    def test_contains_nested_different_value(self):
+    def test_contains_nested_in_array(self):
         actual = {
             "inner": [
-                {"wtf": "omg!!!!!!!"},
-                {"wtf1": "omg1"},
-                {"wtf3": "omg3"}
+                {"a": 1, "b": 2}
             ]
         }
         expected = {
             "inner": [
-                {"wtf": "omg"},
-                {"wtf1": "omg1"}
+                {"a": 1}
+            ]
+        }
+        self.assertTrue(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_contains_nested_in_array_in_object(self):
+        actual = {
+            "outer": [
+                {"inner": {"a": 1, "b": 2}}
+            ]
+        }
+        expected = {
+            "outer": [
+                {"inner": {"a": 1}}
+            ]
+        }
+        self.assertTrue(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_contains_nested_in_array_in_object_in_array(self):
+        actual = {
+            "outer": [
+                {
+                    "inner": [
+                        {"a": 1, "b": 2}
+                    ]
+                }
+            ]
+        }
+        expected = {
+            "outer": [
+                {
+                    "inner": [
+                        {"b": 2}
+                    ]
+                }
+            ]
+        }
+        self.assertTrue(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_not_contains_nested_in_array(self):
+        actual = {
+            "inner": [
+                {"a": 1}
+            ]
+        }
+        expected = {
+            "inner": [
+                {"a": 1, "b": 2}
+            ]
+        }
+        self.assertFalse(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_not_contains_nested_in_array_in_object(self):
+        actual = {
+            "outer": [
+                {"inner": {"a": 1}}
+            ]
+        }
+        expected = {
+            "outer": [
+                {"inner": {"a": 1, "b": 2}}
+            ]
+        }
+        self.assertFalse(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_not_contains_nested_in_array_in_object_in_array(self):
+        actual = {
+            "outer": [
+                {
+                    "inner": [
+                        {"b": 2}
+                    ]
+                }
+            ]
+        }
+        expected = {
+            "outer": [
+                {
+                    "inner": [
+                        {"a": 1, "b": 2}
+                    ]
+                }
             ]
         }
         self.assertFalse(jsoncompare.contains(expected, actual)[0])
