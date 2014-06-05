@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 import unittest
-import sys, os
+import os
+import sys
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if not path in sys.path:
     sys.path.insert(1, path)
 import jsoncompare
+
 
 class TestJSONCompare(unittest.TestCase):
 
@@ -197,7 +199,7 @@ class TestJSONCompare(unittest.TestCase):
             ]
         }
         b = {
-            "failureReason" : "Invalid request entity",
+            "failureReason": "Invalid request entity",
             "fieldValidationErrors" : [
                 {
                     "field" : "Catalog.catalogOwner",
@@ -213,8 +215,8 @@ class TestJSONCompare(unittest.TestCase):
 
     def test_nested_list_order_inner_val_sensitivity_false(self):
         a = {
-            "failureReason" : "Invalid request entity",
-            "fieldValidationErrors" : [
+            "failureReason": "Invalid request entity",
+            "fieldValidationErrors": [
                 {
                     "field" : "Catalog.catalogOwner",
                     "reason" : "may not be smelly"
@@ -226,7 +228,7 @@ class TestJSONCompare(unittest.TestCase):
             ]
         }
         b = {
-            "failureReason" : "Invalid request entity",
+            "failureReason": "Invalid request entity",
             "fieldValidationErrors" : [
                 {
                     "field" : "Catalog.name",
@@ -244,7 +246,6 @@ class TestJSONCompare(unittest.TestCase):
         a = open("testing-data/jsonbloba.json").read()
         b = open("testing-data/jsonblobb.json").read()
         self.assertTrue(jsoncompare.json_are_same(a, b, True)[0])
-
 
     def test_giant_json_finds_reordering(self):
         a = open("testing-data/jsonbloba.json").read()
@@ -304,7 +305,7 @@ class TestJSONCompare(unittest.TestCase):
         self.assertFalse(jsoncompare.contains(expected, actual)[0])
         #same, error_message = jsoncompare.contains(expected, actual)
         #assert same, error_message
-	
+
     # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
     def test_contains_actual_bigger(self):
         actual = [
@@ -318,6 +319,23 @@ class TestJSONCompare(unittest.TestCase):
         ]
         self.assertTrue(jsoncompare.contains(expected, actual)[0])
 
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_contains_actual_bigger_nested(self):
+        actual = {
+            "inner": [
+                {"wtf": "omg"},
+                {"wtf1": "omg1"},
+                {"wtf3": "omg3"}
+            ]
+        }
+        expected = {
+            "inner": [
+                {"wtf": "omg"},
+                {"wtf1": "omg1"}
+            ]
+        }
+        self.assertTrue(jsoncompare.contains(expected, actual)[0])
+
     # Test two json where Actual is smaller - it can NOT contain all of expected attributes
     def test_contains_actual_smaller(self):
         actual = [
@@ -329,6 +347,40 @@ class TestJSONCompare(unittest.TestCase):
             {"wtf1": "omg1"},
             {"wtf2": "omg2"}
         ]
+        self.assertFalse(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is smaller - it can NOT contain all of expected attributes
+    def test_contains_actual_smaller_nested(self):
+        actual = {
+            "inner": [
+                {"wtf": "omg"},
+                {"wtf1": "omg1"}
+            ]
+        }
+        expected = {
+            "inner": [
+                {"wtf": "omg"},
+                {"wtf1": "omg1"},
+                {"wtf2": "omg2"}
+            ]
+        }
+        self.assertFalse(jsoncompare.contains(expected, actual)[0])
+
+    # Test two json where Actual is larger - it can (potentialy) contain all of the expected attributes
+    def test_contains_nested_different_value(self):
+        actual = {
+            "inner": [
+                {"wtf": "omg!!!!!!!"},
+                {"wtf1": "omg1"},
+                {"wtf3": "omg3"}
+            ]
+        }
+        expected = {
+            "inner": [
+                {"wtf": "omg"},
+                {"wtf1": "omg1"}
+            ]
+        }
         self.assertFalse(jsoncompare.contains(expected, actual)[0])
 
 

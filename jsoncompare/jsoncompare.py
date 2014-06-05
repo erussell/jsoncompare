@@ -49,7 +49,7 @@ def _generate_pprint_json(value):
     return json.dumps(value, sort_keys=True, indent=4)
 
 
-def _is_dict_same(expected, actual, ignore_value_of_keys):
+def _is_dict_same(expected, actual, ignore_value_of_keys, ignore_missing_keys=False):
     # DAN - I had to flip flop this
     for key in expected:
         if not key in actual:
@@ -63,7 +63,7 @@ def _is_dict_same(expected, actual, ignore_value_of_keys):
         if not key in ignore_value_of_keys:
             # have to change order
             #are_same_flag, stack = _are_same(actual[key], expected[key], ignore_value_of_keys)
-            are_same_flag, stack = _are_same(expected[key], actual[key],ignore_value_of_keys)
+            are_same_flag, stack = _are_same(expected[key], actual[key], ignore_value_of_keys, ignore_missing_keys)
             if not are_same_flag:
                 return False, \
                        stack.append(StackItem('Different values', expected[key], actual[key]))
@@ -134,10 +134,8 @@ def _are_same(expected, actual, ignore_value_of_keys, ignore_missing_keys=False)
                                   expected,
                                   actual))
 
-    
-
     if isinstance(expected, dict):
-        return _is_dict_same(expected, actual, ignore_value_of_keys)
+        return _is_dict_same(expected, actual, ignore_value_of_keys, ignore_missing_keys)
 
     if isinstance(expected, list):
         return _is_list_same(expected, actual, ignore_value_of_keys)
